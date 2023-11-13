@@ -24,11 +24,11 @@ class WhitelistMiddleware
             ->first();
 
         if (!$whitelist) {
-            // return response()->json([
-            //     'status'=> 'error',
-            //     'message'=> 'Access Denied',
-            //     ], Response::HTTP_BAD_REQUEST);
-            return $next($request);
+            return response()->json([
+                'status'=> 'error',
+                'message'=> 'Access Denied Not whitelisted',
+                ], Response::HTTP_BAD_REQUEST);
+            // return $next($request);
         }
 
         return $next($request);
