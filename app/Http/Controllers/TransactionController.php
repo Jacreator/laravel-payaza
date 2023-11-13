@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\InitTransactionRequest;
 use App\Http\Requests\VerifyTransactionRequest;
+use App\Jobs\TransactionJob;
 use Exception;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
@@ -72,11 +73,20 @@ class TransactionController extends Controller
 
     public function verifyTransaction(VerifyTransactionRequest $request){
         try {
+            // for the case of using RabbitMQ
+            // TransactionJob::dispatch($request->all());
             return response()->json([
                 "code"=> 200,
                 "message"=> "transaction completed successfully",
-                "data"=> $this->tranService->verifyTransaction($request->all())
+                "data"=> TransactionJob::dispatch($request->all())
             ]);
+            
+            // for single monolith behavior
+            // return response()->json([
+            //     "code"=> 200,
+            //     "message"=> "transaction completed successfully",
+            //     "data"=> $this->tranService->verifyTransaction($request->all())
+            // ]);
         } catch(Exception $error) {
             return response()->json([
                 "code"=> 400,
